@@ -111,6 +111,20 @@
       font-size: 12px;
       opacity:.7;
     }
+
+    textarea{
+      width:100%;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.15);
+      font-size:16px;
+      resize: vertical;
+      outline: none;
+    }
+    textarea:focus{
+      border-color: rgba(255,92,138,.6);
+      box-shadow: 0 0 0 4px rgba(255,92,138,.12);
+    }
   </style>
 </head>
 <body>
@@ -130,14 +144,14 @@
   <div class="footer">Powered by: bad jokes & good intentions</div>
 </div>
 
-<!-- STEP 1A (OPTION 1 RESULT) -->
+<!-- STEP 1A -->
 <div class="card hidden" id="step1a">
   <h3>Awwww :( I miss you too</h3>
   <p class="muted">(click to continue)</p>
   <button onclick="goStep2()">Vazhdo ➝</button>
 </div>
 
-<!-- STEP 1B (OPTION 2 RESULT) -->
+<!-- STEP 1B -->
 <div class="card hidden" id="step1b">
   <h3>Dmth qenka cute a?</h3>
   <p class="muted">Be honest 😌</p>
@@ -155,27 +169,101 @@
   <button class="hidden" id="q1bNext" onclick="goStep2()">Next ➝</button>
 </div>
 
-<!-- STEP 2 (NEW Q2) -->
+<!-- STEP 2 (Q2) -->
 <div class="card hidden" id="step2">
   <h3>Q2: Be honest — cka do ishte vibe nese isha kon aty?</h3>
   <p class="muted">(This quiz will not judge you. Probably.)</p>
 
   <div class="row">
     <button onclick="q2Option('Ufff, hopefully hugs included 🫠')">Calm and cozy</button>
-<button onclick="q2Option(&quot;It's number 3, ajo ne Mitro ka qene 2.5. FLM KLB!!&quot;)">Ishem shty a eshte date numer 3 apo 4!!</button>
+    <button onclick="q2Option(&quot;It's number 3, ajo ne Mitro ka qene 2.5. FLM KLB!!&quot;)">Ishem shty a eshte date numer 3 apo 4!!</button>
     <button onclick="q2Option('I know right, se ki idene sa jom tu e enjoy making this')">Why is this actually cute?</button>
   </div>
 </div>
 
-<!-- STEP 2A (Q2 RESPONSE PAGE) -->
+<!-- STEP 2A (Q2 reaction) -->
 <div class="card hidden" id="step2a">
   <h3 id="q2MsgTitle">Noted ✅</h3>
   <p id="q2Msg" style="margin-top:12px;"></p>
   <button onclick="goStep3()">Vazhdo ➝</button>
 </div>
 
-<!-- STEP 3 -->
+<!-- STEP 3 (Q3) -->
 <div class="card hidden" id="step3">
+  <h3>Q3: Cka osht gja ma e mire qe vjen me ty?</h3>
+  <p class="muted">(No overthinking. First instinct.)</p>
+
+  <div class="row">
+    <button onclick="q3Option()">Energjia 😌</button>
+    <button onclick="q3Option()">Humori 😄</button>
+    <button onclick="q3Option()">Qetesia 🫶</button>
+  </div>
+</div>
+
+<!-- STEP 3A (Q3 reaction) -->
+<div class="card hidden" id="step3a">
+  <h3>Honestly…</h3>
+  <p><strong>that explains a lot.</strong></p>
+  <button onclick="goStep4()">Next ➝</button>
+</div>
+
+<!-- STEP 4 (Q4) -->
+<div class="card hidden" id="step4">
+  <h3>Q4: Sa serioz eshte ky quiz, realisht?</h3>
+  <p class="muted">(Asking for scientific reasons.)</p>
+
+  <div class="row">
+    <button onclick="q4Option('E dija. Kjo osht research me rendesi kombtare.')">Shume serioz 🔬</button>
+    <button onclick="q4Option('Perfect balance. Ashtu e kom menu.')">Jo fort, po pak 😅</button>
+    <button onclick="q4Option('Mission accomplished then 😊')">Absolutely not, but I’m smiling</button>
+  </div>
+</div>
+
+<!-- STEP 4A (Q4 reaction) -->
+<div class="card hidden" id="step4a">
+  <h3>✅</h3>
+  <p id="q4Msg" style="margin-top:12px;"></p>
+  <button onclick="goStep5()">Next ➝</button>
+</div>
+
+<!-- STEP 5 (Q5) -->
+<div class="card hidden" id="step5">
+  <h3>Q5</h3>
+  <p><strong>Keq qe skom me ti pa pergjigjet,</strong> but I will feel them.</p>
+  <p>Do you want to send the poor guy a note? <span class="muted">(I will actually receive it)</span></p>
+
+  <div class="row">
+    <button onclick="showStep('5a')">Yes</button>
+    <button class="ghost" onclick="q5No()">No</button>
+  </div>
+</div>
+
+<!-- STEP 5A (Q5 YES -> textbox + send to your email via Formspree) -->
+<div class="card hidden" id="step5a">
+  <h3>Send a note ✍️</h3>
+  <p class="muted">It goes straight to my email. No names needed.</p>
+
+  <form id="noteForm" action="https://formspree.io/f/mreapdvn" method="POST">
+    <!-- optional metadata -->
+    <input type="hidden" name="source" value="valentine-quiz" />
+    <input type="hidden" name="_subject" value="Valentine Quiz Note 💌" />
+
+    <!-- honeypot anti-spam (hidden) -->
+    <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
+
+    <textarea name="message" rows="5" required placeholder="Write something here..."></textarea>
+
+    <div class="row">
+      <button type="submit">Send</button>
+      <button type="button" class="ghost" onclick="goDistance()">Skip ➝</button>
+    </div>
+  </form>
+
+  <p id="sentMsg" class="muted" style="margin-top:12px;"></p>
+</div>
+
+<!-- STEP 6 (Distance + Valentine) -->
+<div class="card hidden" id="step6">
   <h3>Distance Calculator 📏</h3>
   <p>Berlin ➝ Prishtina</p>
   <p><strong>Physical distance:</strong> ~1,300 km (rude)</p>
@@ -206,38 +294,89 @@
   }
 
   // Q1 branching
-  function q1Option1(){
-    popHearts(6);
-    showStep('1a');
-  }
-
-  function q1Option2(){
-    popHearts(6);
-    showStep('1b');
-  }
+  function q1Option1(){ popHearts(6); showStep('1a'); }
+  function q1Option2(){ popHearts(6); showStep('1b'); }
 
   function q1bYes(){
     popHearts(14);
-    const msg = document.getElementById('q1bMsg');
-    msg.innerHTML = "<strong>I knew it &lt;3</strong>";
+    document.getElementById('q1bMsg').innerHTML = "<strong>I knew it &lt;3</strong>";
     document.getElementById('q1bNext').classList.remove('hidden');
   }
 
-  function goStep2(){
-    showStep(2);
-  }
+  function goStep2(){ showStep(2); }
 
-  // Q2 -> message page -> step3
+  // Q2 -> reaction page
   function q2Option(message){
     popHearts(10);
     document.getElementById('q2Msg').innerHTML = "<strong>" + message + "</strong>";
     showStep('2a');
   }
+  function goStep3(){ showStep(3); }
 
-  function goStep3(){
-    showStep(3);
+  // Q3
+  function q3Option(){
+    popHearts(8);
+    showStep('3a');
+  }
+  function goStep4(){ showStep(4); }
+
+  // Q4
+  function q4Option(message){
+    popHearts(8);
+    document.getElementById('q4Msg').innerHTML = "<strong>" + message + "</strong>";
+    showStep('4a');
+  }
+  function goStep5(){ showStep(5); }
+
+  // Q5
+  function q5No(){
+    popHearts(1);
+    // tiny sad moment, then continue
+    showStep('6');
+    startEmoMeter();
+    // show a quick sad emoji via title (optional)
+    document.title = "😔";
+    setTimeout(() => (document.title = "Extremely Serious Valentine Research"), 600);
+  }
+
+  function goDistance(){
+    showStep('6');
     startEmoMeter();
   }
+
+  // --- Form submit (send note without leaving the page) ---
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('noteForm');
+    if(form){
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const sentMsg = document.getElementById('sentMsg');
+        sentMsg.textContent = "Sending…";
+
+        const data = new FormData(form);
+
+        try{
+          const res = await fetch(form.action, {
+            method: 'POST',
+            body: data,
+            headers: { 'Accept': 'application/json' }
+          });
+
+          if(res.ok){
+            popHearts(16);
+            sentMsg.textContent = "Sent ✅";
+            form.reset();
+            setTimeout(() => { goDistance(); }, 900);
+          } else {
+            sentMsg.textContent = "Hmm, didn’t send. Try again?";
+          }
+        } catch {
+          sentMsg.textContent = "Network issue—try again in a sec.";
+        }
+      });
+    }
+  });
 
   // --- emotional distance meter ---
   function startEmoMeter(){
@@ -285,7 +424,7 @@
 
   // hookup dodge behavior
   document.addEventListener('DOMContentLoaded', () => {
-    // step3 No button
+    // step6 No button
     const btn1 = document.getElementById('noBtn');
     if(btn1){
       btn1.addEventListener('mouseenter', () => { moveNo('noBtn','runArea'); popHearts(2); });
