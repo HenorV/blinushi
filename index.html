@@ -4,8 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Extremely Serious Valentine Research</title>
+
   <style>
     :root { --pink:#ff5c8a; --bg:#fff6f8; }
+
     body{
       font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
       background: var(--bg);
@@ -13,647 +15,337 @@
       padding: 28px 14px;
       overflow-x:hidden;
     }
+
     .card{
       background:#fff;
-      max-width: 520px;
-      margin: 0 auto;
-      padding: 26px 20px;
-      border-radius: 18px;
-      box-shadow: 0 12px 32px rgba(0,0,0,.12);
-      position:relative;
+      max-width:520px;
+      margin:0 auto;
+      padding:26px 20px;
+      border-radius:18px;
+      box-shadow:0 12px 32px rgba(0,0,0,.12);
     }
-    h2,h3{ margin: 0 0 10px; }
-    p{ margin: 10px 0; line-height:1.35; }
-    .muted{ opacity:.75; font-size: 14px; }
-    .row{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top: 14px; }
+
+    h2,h3{ margin:0 0 10px; }
+    p{ margin:10px 0; line-height:1.35; }
+    .muted{ opacity:.75; font-size:14px; }
+
+    .row{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
     button{
-      padding: 12px 18px;
+      padding:12px 18px;
       border:0;
-      border-radius: 999px;
+      border-radius:999px;
       cursor:pointer;
       font-size:16px;
-      background: var(--pink);
+      background:var(--pink);
       color:#fff;
-      transition: transform .08s ease;
-      user-select:none;
     }
-    button:active{ transform: scale(.98); }
+
     .ghost{
       background:#fff;
       color:#222;
       border:1px solid rgba(0,0,0,.12);
     }
+
     .hidden{ display:none; }
 
-    /* Back button */
-    .backBtn{
-      position: fixed;
-      top: 14px;
-      left: 14px;
-      z-index: 1000;
-      padding: 8px 12px;
-      font-size: 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.92);
-      color:#333;
+    /* top-left nav button */
+    .navBtn{
+      position:fixed;
+      top:14px;
+      left:14px;
+      z-index:1000;
+      padding:8px 12px;
+      font-size:14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.92);
       border:1px solid rgba(0,0,0,.12);
       cursor:pointer;
-      backdrop-filter: blur(6px);
     }
-    .backBtn.hidden{ display:none; }
+    .navBtn.hidden{ display:none; }
 
     /* floating hearts */
     .heart{
-      position: fixed;
-      bottom: -20px;
-      font-size: 18px;
-      animation: floatUp 3.8s linear forwards;
+      position:fixed;
+      bottom:-20px;
+      font-size:18px;
+      animation:floatUp 3.8s linear forwards;
       pointer-events:none;
-      opacity:.9;
-      filter: drop-shadow(0 6px 10px rgba(0,0,0,.12));
-    }
-    @keyframes floatUp{
-      from { transform: translateY(0) translateX(0) scale(1); opacity: .9; }
-      to   { transform: translateY(-110vh) translateX(var(--drift)) scale(1.25); opacity: 0; }
     }
 
-    /* runaway button container */
+    @keyframes floatUp{
+      from{ transform:translateY(0); opacity:.9; }
+      to{ transform:translateY(-110vh); opacity:0; }
+    }
+
+    /* runaway button area */
     .runArea{
-      position: relative;
-      height: 120px;
-      margin-top: 14px;
-      border-radius: 14px;
-      background: rgba(255,92,138,.06);
-      border: 1px dashed rgba(255,92,138,.35);
+      position:relative;
+      height:120px;
+      margin-top:14px;
+      border-radius:14px;
+      border:1px dashed rgba(255,92,138,.35);
       display:flex;
       align-items:center;
       justify-content:center;
       overflow:hidden;
     }
-    #noBtn, #noBtn2{
+
+    #noBtn,#noBtn2{
       position:absolute;
-      left: 55%;
-      top: 55%;
-      transform: translate(-50%,-50%);
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
     }
 
-    .badge{
-      display:inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(255,92,138,.12);
-      color:#b6002f;
-      font-size: 13px;
-      margin-bottom: 10px;
+    /* hug animation */
+    .hugWrap{
+      margin-top:16px;
+      border:1px solid rgba(255,92,138,.18);
+      border-radius:16px;
+      padding:18px;
+      display:grid;
+      grid-template-columns:1fr 2fr 1fr;
+      align-items:center;
     }
 
-    .footer{
-      margin-top: 12px;
-      font-size: 12px;
-      opacity:.7;
+    .city{ text-align:center; font-weight:600; }
+
+    .path{ position:relative; height:40px; }
+    .line{
+      position:absolute;
+      top:50%;
+      width:100%;
+      height:4px;
+      background:#ddd;
+      transform:translateY(-50%);
+      border-radius:999px;
+    }
+
+    .line::after{
+      content:"";
+      position:absolute;
+      height:100%;
+      width:0%;
+      background:var(--pink);
+      transition:width 2s ease;
+    }
+
+    .path.filled .line::after{ width:100%; }
+
+    .packet{
+      position:absolute;
+      left:0;
+      top:50%;
+      transform:translate(-50%,-50%);
+      font-size:26px;
+      transition:left 2s ease;
     }
 
     textarea{
       width:100%;
       padding:12px;
       border-radius:14px;
-      border:1px solid rgba(0,0,0,.15);
+      border:1px solid #ccc;
       font-size:16px;
-      resize: vertical;
-      outline: none;
-    }
-    textarea:focus{
-      border-color: rgba(255,92,138,.6);
-      box-shadow: 0 0 0 4px rgba(255,92,138,.12);
-    }
-
-    /* virtual hug animation */
-    .hugWrap{
-      margin-top: 16px;
-      background: rgba(255,92,138,.06);
-      border: 1px solid rgba(255,92,138,.18);
-      border-radius: 16px;
-      padding: 18px 12px;
-      display: grid;
-      grid-template-columns: 1fr 2fr 1fr;
-      align-items: center;
-      gap: 10px;
-    }
-    .city{
-      display:flex;
-      flex-direction: column;
-      align-items:center;
-      gap: 8px;
-    }
-    .city .dot{
-      width: 12px;
-      height: 12px;
-      border-radius: 999px;
-      background: var(--pink);
-      box-shadow: 0 0 0 6px rgba(255,92,138,.12);
-    }
-    .city .label{ font-weight: 600; }
-    .path{
-      position: relative;
-      height: 60px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-    .path .line{
-      width: 100%;
-      height: 4px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.12);
-      overflow:hidden;
-      position: relative;
-    }
-    .path .line::after{
-      content:"";
-      position:absolute;
-      left:0;
-      top:0;
-      height:100%;
-      width:0%;
-      background: var(--pink);
-      transition: width 1.9s ease;
-    }
-    .path.filled .line::after{ width:100%; }
-
-    .packet{
-      position:absolute;
-      left: 0%;
-      top: 50%;
-      transform: translate(-10%, -50%);
-      font-size: 28px;
-      filter: drop-shadow(0 8px 14px rgba(0,0,0,.14));
-      transition: left 1.9s ease;
-    }
-    .packet.arrived{ animation: pulse 0.6s ease-in-out 2; }
-    @keyframes pulse{
-      0%{ transform: translate(-10%,-50%) scale(1); }
-      50%{ transform: translate(-10%,-50%) scale(1.18); }
-      100%{ transform: translate(-10%,-50%) scale(1); }
     }
   </style>
 </head>
+
 <body>
 
-<button id="backBtn" class="backBtn hidden" onclick="goBack()">← Back</button>
+<button id="navBtn" class="navBtn hidden" onclick="goBack()">← Back</button>
 
 <!-- STEP 1 -->
 <div class="card" id="step1">
-  <div class="badge">Berlin → Prishtina Lab 🧪</div>
   <h2>Extremely Serious Valentine Research</h2>
-  <p class="muted">Please answer honestly. The algorithm is sensitive.</p>
+  <p class="muted">Please answer honestly.</p>
 
-  <p><strong>Q1:</strong> Cka eshte ma e shtire?</p>
+  <p><strong>Q1: Cka eshte ma e shtire?</strong></p>
   <div class="row">
-    <button onclick="q1Option1()">Une qe sjom ne Kosove</button>
-    <button onclick="q1Option2()">Pretending this quiz isn’t cute</button>
+    <button onclick="q1a()">Une qe sjom ne Kosove</button>
+    <button onclick="q1b()">Pretending this quiz isn’t cute</button>
   </div>
-
-  <div class="footer">Powered by: bad jokes & good intentions</div>
 </div>
 
-<!-- STEP 1A -->
 <div class="card hidden" id="step1a">
   <h3>Awwww :( I miss you too</h3>
-  <p class="muted">(click to continue)</p>
-  <button onclick="goStep2()">Vazhdo ➝</button>
+  <button onclick="showStep(2)">Vazhdo ➝</button>
 </div>
 
-<!-- STEP 1B -->
 <div class="card hidden" id="step1b">
   <h3>Dmth qenka cute a?</h3>
-  <p class="muted">Be honest 😌</p>
-
-  <div class="row">
-    <button onclick="q1bYes()">Yes</button>
+  <button onclick="q1bYes()">Yes</button>
+  <div class="runArea">
+    <button id="noBtn2" class="ghost">No 🙃</button>
   </div>
-
-  <div class="runArea" id="runArea2">
-    <span class="muted">Try pressing “No” if you dare 👇</span>
-    <button class="ghost" id="noBtn2">No 🙃</button>
-  </div>
-
-  <p id="q1bMsg" style="margin-top:16px;"></p>
-  <button class="hidden" id="q1bNext" onclick="goStep2()">Next ➝</button>
+  <p id="q1bMsg"></p>
+  <button id="q1bNext" class="hidden" onclick="showStep(2)">Next ➝</button>
 </div>
 
-<!-- STEP 2 (Q2) -->
+<!-- STEP 2 -->
 <div class="card hidden" id="step2">
-  <h3>Q2: Be honest — cka do ishte vibe nese isha kon aty?</h3>
-  <p class="muted">(This quiz will not judge you. Probably.)</p>
-
+  <h3>Q2: cka do ishte vibe nese isha kon aty?</h3>
   <div class="row">
-    <button onclick="q2Option('Ufff, hopefully hugs included 🫠')">Calm and cozy</button>
-    <button onclick="q2Option(&quot;It's number 3, ajo ne Mitro ka qene 2.5. FLM KLB!!&quot;)">Ishem shty a eshte date numer 3 apo 4!!</button>
-    <button onclick="q2Option('I know right, se ki idene sa jom tu e enjoy making this')">Why is this actually cute?</button>
+    <button onclick="q2('Ufff, hopefully hugs included 🫠')">Calm & cozy</button>
+    <button onclick="q2(`It's number 3, ajo ne Mitro ka qene 2.5 😌`)">Date 3 apo 4?</button>
+    <button onclick="q2('I know right 😄')">Why is this cute?</button>
   </div>
 </div>
 
-<!-- STEP 2A (Q2 reaction) -->
 <div class="card hidden" id="step2a">
-  <h3>Noted ✅</h3>
-  <p id="q2Msg" style="margin-top:12px;"></p>
-  <button onclick="goStep3()">Vazhdo ➝</button>
+  <p id="q2Msg"></p>
+  <button onclick="showStep(3)">Next ➝</button>
 </div>
 
-<!-- STEP 3 (Q3) -->
+<!-- STEP 3 -->
 <div class="card hidden" id="step3">
   <h3>Q3: Cka osht gja ma e mire qe vjen me ty?</h3>
-  <p class="muted">(No overthinking. First instinct.)</p>
-
   <div class="row">
-    <button onclick="q3Option()">Energjia 😌</button>
-    <button onclick="q3Option()">Humori 😄</button>
-    <button onclick="q3Option()">Qetesia 🫶</button>
+    <button onclick="showStep(4)">Energjia 😌</button>
+    <button onclick="showStep(4)">Humori 😄</button>
+    <button onclick="showStep(4)">Qetesia 🫶</button>
   </div>
 </div>
 
-<!-- STEP 3A (Q3 reaction) -->
-<div class="card hidden" id="step3a">
-  <h3>Honestly…</h3>
-  <p><strong>that explains a lot.</strong></p>
-  <button onclick="goStep4()">Next ➝</button>
-</div>
-
-<!-- STEP 4 (Q4) -->
+<!-- STEP 4 -->
 <div class="card hidden" id="step4">
-  <h3>Q4: Sa serioz eshte ky quiz, realisht?</h3>
-  <p class="muted">(Asking for scientific reasons.)</p>
-
+  <h3>Q4: Sa serioz eshte ky quiz?</h3>
   <div class="row">
-    <button onclick="q4Option('E dija. Kjo osht research me rendesi kombtare.')">Shume serioz 🔬</button>
-    <button onclick="q4Option('Perfect balance. Ashtu e kom menu.')">Jo fort, po pak 😅</button>
-    <button onclick="q4Option('Mission accomplished then 😊')">Absolutely not, but I’m smiling</button>
+    <button onclick="q4('Research kombtare 🔬')">Shume serioz</button>
+    <button onclick="q4('Perfect balance 😅')">Pak serioz</button>
+    <button onclick="q4('Mission accomplished 😊')">Jo, po po qeshi</button>
   </div>
 </div>
 
-<!-- STEP 4A (Q4 reaction) -->
 <div class="card hidden" id="step4a">
-  <h3>✅</h3>
-  <p id="q4Msg" style="margin-top:12px;"></p>
-  <button onclick="goStep5()">Next ➝</button>
+  <p id="q4Msg"></p>
+  <button onclick="showStep(5)">Next ➝</button>
 </div>
 
-<!-- STEP 5 (Q5) -->
+<!-- STEP 5 -->
 <div class="card hidden" id="step5">
-  <h3>Q5</h3>
-  <p><strong>Keq qe skom me ti pa pergjigjet,</strong> but I will feel them.</p>
-  <p>Do you want to send the poor guy a note? <span class="muted">(I will actually receive it)</span></p>
+  <p><strong>Keq qe skom me ti pa pergjigjet, but I will feel them.</strong></p>
+  <p>Do you want to send the poor guy a note?</p>
 
   <div class="row">
     <button onclick="showStep('5a')">Yes</button>
-    <button class="ghost" onclick="q5No()">No</button>
+    <button class="ghost" onclick="goHug()">No</button>
   </div>
 </div>
 
-<!-- STEP 5A (Q5 YES) -->
 <div class="card hidden" id="step5a">
-  <h3>Send a note ✍️</h3>
-  <p class="muted">It goes straight to my email. No names needed.</p>
-
   <form id="noteForm" action="https://formspree.io/f/mreapdvn" method="POST">
-    <input type="hidden" name="source" value="valentine-quiz" />
-    <input type="hidden" name="_subject" value="Valentine Quiz Note 💌" />
-    <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
-
-    <textarea name="message" rows="5" required placeholder="Write something here..."></textarea>
-
-    <div class="row">
-      <button type="submit">Send</button>
-      <button type="button" class="ghost" onclick="goHug()">Skip ➝</button>
-    </div>
+    <textarea name="message" rows="4" placeholder="Write something…"></textarea>
+    <button type="submit">Send</button>
   </form>
-
-  <p id="sentMsg" class="muted" style="margin-top:12px;"></p>
 </div>
 
-<!-- STEP 6 (Virtual Hug + Valentine) -->
+<!-- STEP 6 -->
 <div class="card hidden" id="step6">
   <h3>Sending a virtual hug… 🫂</h3>
-  <p class="muted">Berlin ➝ Mitrovica</p>
 
-  <div class="hugWrap" aria-label="virtual hug animation">
-    <div class="city left">
-      <div class="dot"></div>
-      <div class="label">Berlin</div>
-    </div>
-
+  <div class="hugWrap">
+    <div class="city">Berlin</div>
     <div class="path">
       <div class="line"></div>
       <div class="packet" id="hugPacket">💛</div>
     </div>
-
-    <div class="city right">
-      <div class="dot"></div>
-      <div class="label">Mitrovica</div>
-    </div>
+    <div class="city">Mitrovica</div>
   </div>
 
-  <p id="hugStatus" class="muted" style="margin-top:14px;">Calibrating arms…</p>
+  <p id="hugStatus">Calibrating arms…</p>
 
   <div id="hugAfter" class="hidden">
-    <p style="margin-top:14px;"><strong>Hug delivered ✅</strong></p>
-    <p class="muted">If you felt a tiny warm moment… that was me 😌</p>
-
-    <div class="row">
-      <button class="ghost" id="resetBtn" onclick="resetQuiz()">↻ Reset quiz</button>
-    </div>
-
-    <p style="margin-top:18px;"><strong>Bonus question:</strong> Will you be my Valentine?</p>
-    <p class="muted">No pressure. This is a “smile request.”</p>
-
+    <p><strong>Hug delivered 💛</strong></p>
     <button onclick="yesVal()">Yes 😄</button>
-
-    <div class="runArea" id="runArea">
-      <span class="muted">Try pressing “No” if you dare 👇</span>
-      <button class="ghost" id="noBtn">No 🙃</button>
+    <div class="runArea">
+      <button id="noBtn" class="ghost">No 🙃</button>
     </div>
-
-    <p id="result" style="margin-top:16px;"></p>
   </div>
 </div>
 
 <script>
-  // More hearts everywhere (increase this if you want even more)
-  const HEART_MULTIPLIER = 2.2;  // 1 = normal, 2.2 = more
-  const HEART_CAP = 80;          // safety cap for performance
+  let historyStack=[];
 
-  // --- history + navigation ---
-  let stepHistory = [];
-
-  function showStep(n, isBack = false){
-    const targetId = 'step' + n;
-
-    if(!isBack){
-      const current = document.querySelector('.card:not(.hidden)');
-      if(current){
-        stepHistory.push(current.id.replace('step',''));
-      }
-    }
-
-    document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
-    const target = document.getElementById(targetId);
-    if(target) target.classList.remove('hidden');
-
-    // Back button logic
-    const backBtn = document.getElementById('backBtn');
-    if(stepHistory.length > 0){
-      backBtn.classList.remove('hidden');
-    } else {
-      backBtn.classList.add('hidden');
-    }
+  function showStep(n){
+    const current=document.querySelector('.card:not(.hidden)');
+    if(current) historyStack.push(current.id);
+    document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));
+    document.getElementById('step'+n).classList.remove('hidden');
+    updateNav();
   }
 
   function goBack(){
-    if(stepHistory.length === 0) return;
-    const prev = stepHistory.pop();
-    showStep(prev, true);
+    const prev=historyStack.pop();
+    if(!prev) return;
+    document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));
+    document.getElementById(prev).classList.remove('hidden');
+    updateNav();
   }
 
-  function hideBack(){
-    document.getElementById('backBtn').classList.add('hidden');
+  function updateNav(){
+    const btn=document.getElementById('navBtn');
+    if(historyStack.length){
+      btn.textContent='← Back';
+      btn.onclick=goBack;
+      btn.classList.remove('hidden');
+    }else btn.classList.add('hidden');
   }
 
-  function resetQuiz(){
-    // clear history + reset UI bits
-    stepHistory = [];
-    hideBack();
-
-    // reset text areas/messages/buttons
-    const q1bMsg = document.getElementById('q1bMsg');
-    const q1bNext = document.getElementById('q1bNext');
-    if(q1bMsg) q1bMsg.textContent = '';
-    if(q1bNext) q1bNext.classList.add('hidden');
-
-    const q2Msg = document.getElementById('q2Msg');
-    if(q2Msg) q2Msg.textContent = '';
-
-    const q4Msg = document.getElementById('q4Msg');
-    if(q4Msg) q4Msg.textContent = '';
-
-    const sentMsg = document.getElementById('sentMsg');
-    if(sentMsg) sentMsg.textContent = '';
-
-    const result = document.getElementById('result');
-    if(result) result.textContent = '';
-
-    // reset hug UI
-    const status = document.getElementById('hugStatus');
-    const after = document.getElementById('hugAfter');
-    const packet = document.getElementById('hugPacket');
-    const path = document.querySelector('.path');
-    if(status) status.textContent = "Calibrating arms…";
-    if(after) after.classList.add('hidden');
-    if(packet){
-      packet.classList.remove('arrived');
-      packet.style.left = '0%';
-    }
-    if(path) path.classList.remove('filled');
-
-    document.title = "Extremely Serious Valentine Research";
-    popHearts(18);
-    showStep(1, true);
-  }
-
-  // Q1 branching
-  function q1Option1(){ popHearts(8); showStep('1a'); }
-  function q1Option2(){ popHearts(8); showStep('1b'); }
+  function q1a(){ showStep('1a'); }
+  function q1b(){ showStep('1b'); }
 
   function q1bYes(){
-    popHearts(16);
-    document.getElementById('q1bMsg').innerHTML = "<strong>I knew it &lt;3</strong>";
+    document.getElementById('q1bMsg').innerHTML="<strong>I knew it &lt;3</strong>";
     document.getElementById('q1bNext').classList.remove('hidden');
   }
 
-  function goStep2(){ showStep(2); }
-
-  // Q2
-  function q2Option(message){
-    popHearts(14);
-    document.getElementById('q2Msg').innerHTML = "<strong>" + message + "</strong>";
+  function q2(msg){
+    document.getElementById('q2Msg').innerHTML="<strong>"+msg+"</strong>";
     showStep('2a');
   }
-  function goStep3(){ showStep(3); }
 
-  // Q3
-  function q3Option(){ popHearts(12); showStep('3a'); }
-  function goStep4(){ showStep(4); }
-
-  // Q4
-  function q4Option(message){
-    popHearts(12);
-    document.getElementById('q4Msg').innerHTML = "<strong>" + message + "</strong>";
+  function q4(msg){
+    document.getElementById('q4Msg').innerHTML="<strong>"+msg+"</strong>";
     showStep('4a');
-  }
-  function goStep5(){ showStep(5); }
-
-  // Q5
-  function q5No(){
-    popHearts(4);
-    showStep('6');
-    startHug();
-    document.title = "😔";
-    setTimeout(() => (document.title = "Extremely Serious Valentine Research"), 600);
   }
 
   function goHug(){
-    showStep('6');
+    showStep(6);
     startHug();
   }
 
-  // --- Form submit (send note without leaving the page) ---
-  document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('noteForm');
-    if(form){
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const sentMsg = document.getElementById('sentMsg');
-        sentMsg.textContent = "Sending…";
-
-        const data = new FormData(form);
-
-        try{
-          const res = await fetch(form.action, {
-            method: 'POST',
-            body: data,
-            headers: { 'Accept': 'application/json' }
-          });
-
-          if(res.ok){
-            popHearts(28);
-            sentMsg.textContent = "Sent ✅";
-            form.reset();
-            setTimeout(() => { goHug(); }, 900);
-          } else {
-            sentMsg.textContent = "Hmm, didn’t send. Try again?";
-          }
-        } catch {
-          sentMsg.textContent = "Network issue—try again in a sec.";
-        }
-      });
-    }
-  });
-
-  // --- virtual hug animation ---
   function startHug(){
-    const status = document.getElementById('hugStatus');
-    const after = document.getElementById('hugAfter');
-    const packet = document.getElementById('hugPacket');
-    const path = document.querySelector('.path');
+    const path=document.querySelector('.path');
+    const packet=document.getElementById('hugPacket');
+    path.classList.add('filled');
+    packet.style.left='100%';
 
-    if(!status || !after || !packet || !path) return;
-
-    // reset
-    after.classList.add('hidden');
-    packet.classList.remove('arrived');
-    packet.style.left = '0%';
-    path.classList.remove('filled');
-
-    // allow back until delivered
-    const backBtn = document.getElementById('backBtn');
-    if(stepHistory.length > 0) backBtn.classList.remove('hidden');
-
-    status.textContent = "Calibrating arms…";
-    popHearts(10);
-
-    setTimeout(() => {
-      status.textContent = "Launching hug…";
-      path.classList.add('filled');
-      packet.textContent = "🫂";
-      packet.style.left = '100%';
-      popHearts(16);
-    }, 650);
-
-    setTimeout(() => {
-      packet.classList.add('arrived');
-      packet.textContent = "💛";
-      status.textContent = "Arrived in Mitrovica 💛";
-      popHearts(22);
-    }, 650 + 1900);
-
-    setTimeout(() => {
-      after.classList.remove('hidden');
-      status.textContent = "Okay… now I’m smiling.";
-
-      // after hug delivered: remove Back + show reset option
-      hideBack();
-      popHearts(24);
-    }, 650 + 1900 + 700);
+    setTimeout(()=>{
+      document.getElementById('hugAfter').classList.remove('hidden');
+      const btn=document.getElementById('navBtn');
+      btn.textContent='↻ Reset quiz';
+      btn.onclick=resetQuiz;
+      btn.classList.remove('hidden');
+    },2000);
   }
 
-  // --- runaway NO button (generic) ---
-  function moveNo(btnId, areaId){
-    const btn = document.getElementById(btnId);
-    const ar = document.getElementById(areaId);
-    if(!btn || !ar) return;
-
-    const a = ar.getBoundingClientRect();
-    const b = btn.getBoundingClientRect();
-    const pad = 10;
-
-    const maxX = a.width - b.width - pad;
-    const maxY = a.height - b.height - pad;
-
-    const x = Math.max(pad, Math.floor(Math.random() * maxX));
-    const y = Math.max(pad, Math.floor(Math.random() * maxY));
-
-    btn.style.left = x + 'px';
-    btn.style.top = y + 'px';
-    btn.style.transform = 'none';
+  function resetQuiz(){
+    historyStack=[];
+    document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));
+    document.getElementById('step1').classList.remove('hidden');
+    document.getElementById('navBtn').classList.add('hidden');
   }
 
-  // hookup dodge behavior
-  document.addEventListener('DOMContentLoaded', () => {
-    // step6 No button
-    const btn1 = document.getElementById('noBtn');
-    if(btn1){
-      btn1.addEventListener('mouseenter', () => { moveNo('noBtn','runArea'); popHearts(8); });
-      btn1.addEventListener('touchstart', (e) => { e.preventDefault(); moveNo('noBtn','runArea'); popHearts(8); }, {passive:false});
-      setTimeout(() => moveNo('noBtn','runArea'), 250);
-    }
-
-    // step1b No button
-    const btn2 = document.getElementById('noBtn2');
-    if(btn2){
-      btn2.addEventListener('mouseenter', () => { moveNo('noBtn2','runArea2'); popHearts(8); });
-      btn2.addEventListener('touchstart', (e) => { e.preventDefault(); moveNo('noBtn2','runArea2'); popHearts(8); }, {passive:false});
-      setTimeout(() => moveNo('noBtn2','runArea2'), 250);
-    }
-  });
-
-  // --- YES handler (final) ---
   function yesVal(){
-    popHearts(36);
-    const lines = [
-      "Okay wow. That’s adorable 😄",
-      "Official verdict: you just made my day.",
-      "Long distance: 1 — Us: 100."
-    ];
-    document.getElementById('result').innerHTML =
-      "<strong>" + lines[Math.floor(Math.random()*lines.length)] + "</strong><br><span class='muted'>Happy Valentine’s Day 💛</span>";
-  }
-
-  // --- floating hearts ---
-  function popHearts(n){
-    const emojis = ["💛","💗","💘","💓","✨","🦌","🦞"];
-    const count = Math.min(HEART_CAP, Math.floor(n * HEART_MULTIPLIER));
-
-    for(let i=0;i<count;i++){
-      const h = document.createElement('div');
-      h.className = 'heart';
-      h.textContent = emojis[Math.floor(Math.random()*emojis.length)];
-      h.style.left = Math.floor(Math.random()*100) + "vw";
-      h.style.setProperty('--drift', (Math.floor(Math.random()*80)-40) + "px");
-      h.style.fontSize = (14 + Math.random()*18) + "px";
-      h.style.animationDuration = (2.6 + Math.random()*2.4) + "s";
-      document.body.appendChild(h);
-      setTimeout(() => h.remove(), 4200);
-    }
+    alert("Okay wow. That was cute 😄");
   }
 </script>
 
