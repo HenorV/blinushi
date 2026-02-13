@@ -89,7 +89,6 @@
       justify-content:center;
       overflow:hidden;
     }
-    /* both runaway buttons share this positioning behavior */
     #noBtn, #noBtn2{
       position:absolute;
       left: 55%;
@@ -156,15 +155,23 @@
   <button class="hidden" id="q1bNext" onclick="goStep2()">Next ➝</button>
 </div>
 
-<!-- STEP 2 -->
+<!-- STEP 2 (NEW Q2) -->
 <div class="card hidden" id="step2">
-  <h3>Q2: Best way to survive Valentine’s Day?</h3>
-  <p class="muted">Select one. (All choices are suspiciously correct.)</p>
+  <h3>Q2: Be honest — cka do ishte vibe nese isha kon aty?</h3>
+  <p class="muted">(This quiz will not judge you. Probably.)</p>
+
   <div class="row">
-    <button onclick="pick('Excellent choice 🧠', 3)">Chocolate</button>
-    <button onclick="pick('That’s the vibe 😄', 3)">Laughing at something dumb</button>
-    <button onclick="pick('Wow, so you’re smart-smart 😌', 3)">This exact page</button>
+    <button onclick="q2Option('Ufff, hopefully hugs included 🫠')">Calm and cozy</button>
+    <button onclick="q2Option('It\\'s number 3, ajo ne Mitro ka qene 2.5. FLM KLB!!')">Ishem shty a eshte date numer 3 apo 4!!</button>
+    <button onclick="q2Option('I know right, se ki idene sa jom tu e enjoy making this')">Why is this actually cute?</button>
   </div>
+</div>
+
+<!-- STEP 2A (Q2 RESPONSE PAGE) -->
+<div class="card hidden" id="step2a">
+  <h3 id="q2MsgTitle">Noted ✅</h3>
+  <p id="q2Msg" style="margin-top:12px;"></p>
+  <button onclick="goStep3()">Vazhdo ➝</button>
 </div>
 
 <!-- STEP 3 -->
@@ -220,13 +227,16 @@
     showStep(2);
   }
 
-  // used for step2 -> step3
-  function pick(msg, nextStep){
-    popHearts(6);
-    document.title = msg;
-    setTimeout(() => (document.title = "Extremely Serious Valentine Research"), 900);
-    showStep(nextStep);
-    if(nextStep === 3) startEmoMeter();
+  // Q2 -> message page -> step3
+  function q2Option(message){
+    popHearts(10);
+    document.getElementById('q2Msg').innerHTML = "<strong>" + message + "</strong>";
+    showStep('2a');
+  }
+
+  function goStep3(){
+    showStep(3);
+    startEmoMeter();
   }
 
   // --- emotional distance meter ---
