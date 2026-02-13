@@ -45,22 +45,6 @@
     }
     .hidden{ display:none; }
 
-    /* progress bar */
-    .bar{
-      width:100%;
-      background: rgba(0,0,0,.08);
-      border-radius: 999px;
-      overflow:hidden;
-      height: 14px;
-      margin: 12px 0 0;
-    }
-    .fill{
-      height:100%;
-      width: 0%;
-      background: var(--pink);
-      transition: width .8s ease;
-    }
-
     /* floating hearts */
     .heart{
       position: fixed;
@@ -125,6 +109,79 @@
       border-color: rgba(255,92,138,.6);
       box-shadow: 0 0 0 4px rgba(255,92,138,.12);
     }
+
+    /* virtual hug animation */
+    .hugWrap{
+      margin-top: 16px;
+      background: rgba(255,92,138,.06);
+      border: 1px solid rgba(255,92,138,.18);
+      border-radius: 16px;
+      padding: 18px 12px;
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      align-items: center;
+      gap: 10px;
+    }
+    .city{
+      display:flex;
+      flex-direction: column;
+      align-items:center;
+      gap: 8px;
+    }
+    .city .dot{
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: var(--pink);
+      box-shadow: 0 0 0 6px rgba(255,92,138,.12);
+    }
+    .city .label{
+      font-weight: 600;
+    }
+    .path{
+      position: relative;
+      height: 60px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .path .line{
+      width: 100%;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.12);
+      overflow:hidden;
+      position: relative;
+    }
+    .path .line::after{
+      content:"";
+      position:absolute;
+      left:0;
+      top:0;
+      height:100%;
+      width:0%;
+      background: var(--pink);
+      transition: width 1.9s ease;
+    }
+    .path.filled .line::after{ width:100%; }
+
+    .packet{
+      position:absolute;
+      left: 0%;
+      top: 50%;
+      transform: translate(-10%, -50%);
+      font-size: 28px;
+      filter: drop-shadow(0 8px 14px rgba(0,0,0,.14));
+      transition: left 1.9s ease;
+    }
+    .packet.arrived{
+      animation: pulse 0.6s ease-in-out 2;
+    }
+    @keyframes pulse{
+      0%{ transform: translate(-10%,-50%) scale(1); }
+      50%{ transform: translate(-10%,-50%) scale(1.18); }
+      100%{ transform: translate(-10%,-50%) scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -146,7 +203,7 @@
 
 <!-- STEP 1A -->
 <div class="card hidden" id="step1a">
-  <h3>Awwww :( I miss you too</h3>
+  <h3>Awwww :( I miss you too</h3  >
   <p class="muted">(click to continue)</p>
   <button onclick="goStep2()">Vazhdo ➝</button>
 </div>
@@ -183,7 +240,7 @@
 
 <!-- STEP 2A (Q2 reaction) -->
 <div class="card hidden" id="step2a">
-  <h3 id="q2MsgTitle">Noted ✅</h3>
+  <h3>Noted ✅</h3>
   <p id="q2Msg" style="margin-top:12px;"></p>
   <button onclick="goStep3()">Vazhdo ➝</button>
 </div>
@@ -244,46 +301,61 @@
   <p class="muted">It goes straight to my email. No names needed.</p>
 
   <form id="noteForm" action="https://formspree.io/f/mreapdvn" method="POST">
-    <!-- optional metadata -->
     <input type="hidden" name="source" value="valentine-quiz" />
     <input type="hidden" name="_subject" value="Valentine Quiz Note 💌" />
-
-    <!-- honeypot anti-spam (hidden) -->
     <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
 
     <textarea name="message" rows="5" required placeholder="Write something here..."></textarea>
 
     <div class="row">
       <button type="submit">Send</button>
-      <button type="button" class="ghost" onclick="goDistance()">Skip ➝</button>
+      <button type="button" class="ghost" onclick="goHug()">Skip ➝</button>
     </div>
   </form>
 
   <p id="sentMsg" class="muted" style="margin-top:12px;"></p>
 </div>
 
-<!-- STEP 6 (Distance + Valentine) -->
+<!-- STEP 6 (Virtual Hug + Valentine) -->
 <div class="card hidden" id="step6">
-  <h3>Distance Calculator 📏</h3>
-  <p>Berlin ➝ Prishtina</p>
-  <p><strong>Physical distance:</strong> ~1,300 km (rude)</p>
-  <p><strong>Travel time:</strong> too many hours (also rude)</p>
+  <h3>Sending a virtual hug… 🫂</h3>
+  <p class="muted">Berlin ➝ Mitrovica</p>
 
-  <p style="margin-top:14px;"><strong>Measuring emotional distance…</strong></p>
-  <div class="bar"><div class="fill" id="fill"></div></div>
-  <p id="emoText" class="muted">Processing…</p>
+  <div class="hugWrap" aria-label="virtual hug animation">
+    <div class="city left">
+      <div class="dot"></div>
+      <div class="label">Berlin</div>
+    </div>
 
-  <p style="margin-top:18px;"><strong>Bonus question:</strong> Will you be my Valentine?</p>
-  <p class="muted">No pressure. This is a “smile request.”</p>
+    <div class="path">
+      <div class="line"></div>
+      <div class="packet" id="hugPacket">💛</div>
+    </div>
 
-  <button onclick="yesVal()">Yes 😄</button>
-
-  <div class="runArea" id="runArea">
-    <span class="muted">Try pressing “No” if you dare 👇</span>
-    <button class="ghost" id="noBtn">No 🙃</button>
+    <div class="city right">
+      <div class="dot"></div>
+      <div class="label">Mitrovica</div>
+    </div>
   </div>
 
-  <p id="result" style="margin-top:16px;"></p>
+  <p id="hugStatus" class="muted" style="margin-top:14px;">Calibrating arms…</p>
+
+  <div id="hugAfter" class="hidden">
+    <p style="margin-top:14px;"><strong>Hug delivered ✅</strong></p>
+    <p class="muted">If you felt a tiny warm moment… that was me 😌</p>
+
+    <p style="margin-top:18px;"><strong>Bonus question:</strong> Will you be my Valentine?</p>
+    <p class="muted">No pressure. This is a “smile request.”</p>
+
+    <button onclick="yesVal()">Yes 😄</button>
+
+    <div class="runArea" id="runArea">
+      <span class="muted">Try pressing “No” if you dare 👇</span>
+      <button class="ghost" id="noBtn">No 🙃</button>
+    </div>
+
+    <p id="result" style="margin-top:16px;"></p>
+  </div>
 </div>
 
 <script>
@@ -305,7 +377,7 @@
 
   function goStep2(){ showStep(2); }
 
-  // Q2 -> reaction page
+  // Q2
   function q2Option(message){
     popHearts(10);
     document.getElementById('q2Msg').innerHTML = "<strong>" + message + "</strong>";
@@ -314,10 +386,7 @@
   function goStep3(){ showStep(3); }
 
   // Q3
-  function q3Option(){
-    popHearts(8);
-    showStep('3a');
-  }
+  function q3Option(){ popHearts(8); showStep('3a'); }
   function goStep4(){ showStep(4); }
 
   // Q4
@@ -331,17 +400,15 @@
   // Q5
   function q5No(){
     popHearts(1);
-    // tiny sad moment, then continue
     showStep('6');
-    startEmoMeter();
-    // show a quick sad emoji via title (optional)
+    startHug();
     document.title = "😔";
     setTimeout(() => (document.title = "Extremely Serious Valentine Research"), 600);
   }
 
-  function goDistance(){
+  function goHug(){
     showStep('6');
-    startEmoMeter();
+    startHug();
   }
 
   // --- Form submit (send note without leaving the page) ---
@@ -367,7 +434,7 @@
             popHearts(16);
             sentMsg.textContent = "Sent ✅";
             form.reset();
-            setTimeout(() => { goDistance(); }, 900);
+            setTimeout(() => { goHug(); }, 900);
           } else {
             sentMsg.textContent = "Hmm, didn’t send. Try again?";
           }
@@ -378,27 +445,41 @@
     }
   });
 
-  // --- emotional distance meter ---
-  function startEmoMeter(){
-    const fill = document.getElementById('fill');
-    const emoText = document.getElementById('emoText');
-    fill.style.width = '0%';
-    emoText.textContent = 'Processing…';
+  // --- virtual hug animation ---
+  function startHug(){
+    const status = document.getElementById('hugStatus');
+    const after = document.getElementById('hugAfter');
+    const packet = document.getElementById('hugPacket');
+    const path = document.querySelector('.path');
 
-    const steps = [
-      {w: 22, t: 'Calibrating vibes…'},
-      {w: 55, t: 'Accounting for missing you a little…'},
-      {w: 82, t: 'Removing “distance” from the equation…'},
-      {w: 100, t: 'Result: ❌ Not even close.'}
-    ];
+    if(!status || !after || !packet || !path) return;
 
-    let i = 0;
-    const timer = setInterval(() => {
-      fill.style.width = steps[i].w + '%';
-      emoText.textContent = steps[i].t;
-      i++;
-      if(i >= steps.length) clearInterval(timer);
-    }, 900);
+    // reset
+    after.classList.add('hidden');
+    packet.classList.remove('arrived');
+    packet.style.left = '0%';
+    path.classList.remove('filled');
+
+    status.textContent = "Calibrating arms…";
+    popHearts(4);
+
+    setTimeout(() => {
+      status.textContent = "Launching hug…";
+      path.classList.add('filled');
+      packet.style.left = '100%';
+      popHearts(6);
+    }, 650);
+
+    setTimeout(() => {
+      packet.classList.add('arrived');
+      status.textContent = "Arrived in Mitrovica 💛";
+      popHearts(10);
+    }, 650 + 1900);
+
+    setTimeout(() => {
+      after.classList.remove('hidden');
+      status.textContent = "Okay… now I’m smiling.";
+    }, 650 + 1900 + 700);
   }
 
   // --- runaway NO button (generic) ---
